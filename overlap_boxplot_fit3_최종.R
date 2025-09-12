@@ -1,0 +1,145 @@
+rm(list=ls())
+
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(readr)
+
+getwd()
+setwd("../../overlap/")
+
+Sys.glob("*.csv")
+
+data <- data.frame(read.csv("overlap_all_patterns.csv"))
+
+colnames(data) <- sub("Sample_", "Mean_", colnames(data))
+
+input_data <- data.frame(read.csv("./Aging_PAR_log2_data.csv"))
+colnames(input_data)[1] <- "Name"
+                            
+sample_columns <- grep("^Sample_", names(input_data), value = TRUE)
+                          
+input_subset <- input_data %>% filter(Name %in% data$Name) 
+
+merged_data <- data %>% left_join(input_subset, by="Name")
+
+getwd()
+setwd("../overlap/")
+
+# 샘플별 log2 데이터를 뒤쪽에 합침!
+write.csv(merged_data, "overlap_all_patterns_update.csv")
+
+pval_columns <- grep("^pval_", names(data), value = TRUE)
+
+merged_filter <- merged_data %>% select(Name, pattern, all_of(sample_columns), all_of(pval_columns))
+
+library(tidyr)
+
+df_merged <- merged_filter %>%
+  pivot_longer(
+    cols = starts_with("Sample_"),
+    names_to = "Sample",
+    values_to = "PAR"
+  )
+
+df_merged <- df_merged %>% mutate(Group = sub("Sample_(\\d+s)\\..*", "\\1", Sample))
+df_merged <- df_merged %>% mutate(Group = recode(Group, "20s" = "twenties", "30s" = "thirties", 
+                        "40s" = "forties", "50s" = "fifties"))
+
+df_merged$Group <- factor(df_merged$Group, levels = c("twenties", "thirties", "forties", "fifties"))
+
+df_ion <- df_merged %>%
+  filter(Name == "PROC_DIKEVF_1_y1") # ion 이름만 바꿔서 실행
+
+pval_df <- data.frame(
+  group1 = c("twenties", "thirties", "forties", "twenties", "twenties", "thirties"),
+  group2 = c("thirties", "forties", "fifties", "forties", "fifties", "fifties"),
+  p = c(unique(df_ion$pval_20Svs30S),
+        unique(df_ion$pval_30Svs40S),
+        unique(df_ion$pval_40Svs50S),
+        unique(df_ion$pval_20Svs40S),
+        unique(df_ion$pval_20Svs50S),
+        unique(df_ion$pval_30Svs50S)),
+  y.position = c(7.3, 7.5, 7.7, 8.5, 9.5, 9)  # y위치는 데이터 분포에 맞게 조정
+)
+
+pval_df$p.signif <- ifelse(pval_df$p < 0.001, "***", ifelse(pval_df$p < 0.01, "**", ifelse(pval_df$p < 0.05, "*", "ns")))
+
+ggplot(df_ion, aes(x = Group, y = PAR, fill = Group)) +
+  geom_boxplot(alpha = 0.6) +
+  geom_jitter(width = 0.2, size = 0.5, alpha = 0.5) +
+  stat_pvalue_manual(pval_df, label = "p.signif", tip.length = 0.01, inherit.aes = FALSE) +
+  #stat_compare_means(method = "wilcox.test",  
+                     #comparisons = list(c("twenties", "thirties"),
+                                        #c("thirties", "forties"), c("forties", "fifties")), 
+                     #label = "p.signif") +
+  facet_wrap(~ Name, scales = "free_y") +
+  theme_minimal() +
+  labs(title = "Boxplot of Ions", y = "PAR (log2)", x = "")
+  
+###################
+# y.position 자동화
+
+library(dplyr)
+
+# 한번만 하세요
+df_merged <- df_merged %>% relocate(pval_30Svs50S, .before=pval_20Svs50S)
+  
+# 원하는 패턴에 맞게 추출함
+df_filter <- df_merged %>% filter(pattern == "(1,0,1)")
+
+# 이온이 총 몇 개 인지 보기
+unique(df_filter$Name)
+
+# 1~4, 5~8, 9~12, 13~16, 17~ .. <- 이런 식으로 4개씩 뽑기
+df_pattern <- df_filter[df_filter$Name %in% unique(df_filter$Name)[17:20],]
+# 1. 이온별 y 최대값 추출
+y_max <- df_pattern %>%
+  group_by(Name) %>%
+  summarise(ymax = max(PAR, na.rm = TRUE), .groups = "drop")
+
+# 2. 기존 p-value long 형식 변환
+pval_df <- df_pattern %>%
+  select(Name, starts_with("pval_")) %>%
+  distinct() %>%
+  tidyr::pivot_longer(
+    cols = starts_with("pval_"),
+    names_to = "comparison",
+    values_to = "p"
+  ) %>%
+  mutate(
+    group1 = case_when(
+      grepl("20Svs30S", comparison) ~ "twenties",
+      grepl("30Svs40S", comparison) ~ "thirties",
+      grepl("40Svs50S", comparison) ~ "forties",
+      grepl("20Svs40S", comparison) ~ "twenties",
+      grepl("30Svs50S", comparison) ~ "thirties",
+      grepl("20Svs50S", comparison) ~ "twenties"
+    ),
+    group2 = case_when(
+      grepl("20Svs30S", comparison) ~ "thirties",
+      grepl("30Svs40S", comparison) ~ "forties",
+      grepl("40Svs50S", comparison) ~ "fifties",
+      grepl("20Svs40S", comparison) ~ "forties",
+      grepl("30Svs50S", comparison) ~ "fifties",
+      grepl("20Svs50S", comparison) ~ "fifties"
+    )
+  ) %>%
+  left_join(y_max, by = "Name") %>%
+  group_by(Name) %>%
+  mutate(y.position = ymax + 0.5 * (row_number() - 1)) %>%
+  ungroup() %>%
+  select(Name, group1, group2, p, y.position)
+
+pval_df$p.signif <- ifelse(pval_df$p < 0.001, "***", ifelse(pval_df$p < 0.01, "**", ifelse(pval_df$p < 0.05, "*", "ns")))
+
+ggplot(df_pattern, aes(x = Group, y = PAR, fill = Group)) +
+  geom_boxplot(alpha = 0.6, outlier.shape=NA) +
+  geom_jitter(width = 0.2, size = 0.5, alpha = 0.5) +
+  stat_pvalue_manual(pval_df, label = "p.signif", xmin="group1", xmax="group2", tip.length = 0.01, inherit.aes=FALSE) +
+  facet_wrap(~Name, scales = "free_y") +
+  theme_minimal() +
+  theme(plot.margin = margin(10, 20, 10, 10)) +
+  labs(title = "Boxplot of Ions", y = "PAR (log2)", x = "") +
+  coord_cartesian(clip = "off")
+
