@@ -1,3 +1,7 @@
+리드미는 한국어로
+코드 주석은 영어로?
+주석은 지우거나 영어로
+
 library(limma)
 library(tidyverse)
 library(dplyr)
@@ -508,4 +512,5 @@ ggplot(df_common, aes(x = Group, y = PAR, fill = Group)) +
   facet_wrap(~ Ion, scales = "free_y") +
   theme_minimal() +
   labs(title = "Boxplot of Common DE Ions", y = "Expression (log2)", x = "")
+
 
