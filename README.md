@@ -5,7 +5,7 @@
 
 
 ---
-## 1. Data_preprocessing
+## 1. Data preprocessing
 - #### Data_preprocessing_for_PAR.R
 Normalize에 사용할 internal standard(IS)를 선택하기 위해서, IS 중 peptide-03의 1,2,3번째 precursor의 6개 이온을 이용하여 각 이온의 PAR (Peak Area Ratio) 값을 계산함.
 
