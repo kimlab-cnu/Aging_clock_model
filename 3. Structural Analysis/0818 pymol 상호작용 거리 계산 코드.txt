@@ -1,0 +1,57 @@
+# 펩타이드 2개 지정 후 모든 거리 재기
+1. 두 펩타이드 정의 → 각각 체인/번호로 펩타이드 영역을 selection으로 만듦.
+select pep1, chain A and resi 204-210
+select pep2, chain B and resi 1101-1106
+
+2. 두 펩타이드 사이의 모든 원자쌍 거리 → pep1의 모든 원자 × pep2의 모든 원자 쌍을 전부 측정·표시.
+distance all_dists, pep1, pep2
+
+# 최단 거리 재기
+3. 최단 거리만 표시하는 커맨드 등록, 실행 → pep1–pep2 사이에서 가장 가까운 원자 쌍 1개만 라인으로 생성, 값 출력.
+python
+from pymol import cmd
+import math
+
+def mindist(sel1, sel2, obj_name="min_dist"):
+    idx1 = cmd.index(sel1)
+    idx2 = cmd.index(sel2)
+    if not idx1 or not idx2:
+        print("Selections are empty.")
+        return
+    best = None
+    best_d = 1e9
+    for m1,i1 in idx1:
+        c1 = cmd.get_atom_coords(f"{m1}`{i1}", 1)
+        for m2,i2 in idx2:
+            c2 = cmd.get_atom_coords(f"{m2}`{i2}", 1)
+            d = math.dist(c1, c2)
+            if d < best_d:
+                best_d = d
+                best = (m1,i1,m2,i2)
+    if best:
+        cmd.delete(obj_name)
+        cmd.distance(obj_name, f"{best[0]}`{best[1]}", f"{best[2]}`{best[3]}")
+        print(f"Min distance = {best_d:.3f} Å between {best[0]}`{best[1]} and {best[2]}`{best[3]}")
+cmd.extend("mindist", mindist)
+python end
+
+mindist pep1, pep2
+
+
+# 인터페이스 거리를 5Å로 기준
+4. A–B 인터페이스 selection(5 Å 기준) → ifaceA: A 체인에서 B 체인과 5 Å 이내에 닿는 모든 잔기(전체 잔기 단위, byres) / → ifaceB: 그 반대. 즉 A–B 전체 접촉면의 잔기들을 전부 담음(컷오프 5 Å 기준).
+select ifaceA, byres (chain A within 5 of chain B)
+select ifaceB, byres (chain B within 5 of chain A)
+
+5. 펩타이드와 인터페이스 간 거리 → 두 줄씩이 각각 “모든 원자쌍 거리”와 “최단 1개만”을 의미.
+distance pep1_ifaceB, pep1, ifaceB
+mindist pep1, ifaceB, min_dist_2
+
+distance pep2_ifaceA, pep2, ifaceA
+mindist pep2, ifaceA, min_dist_3
+
+# 5A 이내
+6. 5 Å 이하 쌍만 필터링해서 보기 → 지정 컷오프(5 Å) 이하의 원자쌍만 표시.
+distance short_dists, pep1, pep2, 5.0
+distance short2_dists, pep1, ifaceB, 5.0
+distance short3_dists, pep2, ifaceA, 5.0
