@@ -33,7 +33,7 @@ limma를 사용하여 패턴별 FC, p-value 조건을 충족하는 이온만 추
 코사인 유사도 분석 결과와 limma 결과를 합쳐, 중복되는 이온만 추출.
 
 
-- ### overlap_boxplot_fit3_최종.R
+- #### overlap_boxplot_fit3_최종.R
 패턴별 각 이온의 박스플랏을 그림.
 
 
