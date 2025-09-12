@@ -16,6 +16,7 @@ Normalize에 사용할 internal standard(IS)를 선택하기 위해서, IS 중 p
 
 - #### PAR_input_preprocessing.R
 - #### Aging_log_norm_data_preprocessing.ipynb
+- #### PAR_data_preprocessing_Jhyh.R
 이후 분석에서 필요한 데이터를 전처리.
 
 
