@@ -40,7 +40,7 @@ limma를 사용하여 패턴별 FC, p-value 조건을 충족하는 이온만 추
 
 ## 3. Structural Analysis
 
-- #### 0818 pymol 상호작용 거리 계산 코드.txt
+- #### pymol 상호작용 거리 계산 코드.txt
 AlphaFold3 multimer 결과를 pymol로 열어서 확인할 때, 패턴별 단백질 복합체(1:1) 내 펩타이드 및 단백질 인터페이스의 최단거리 확인함.
 
 
