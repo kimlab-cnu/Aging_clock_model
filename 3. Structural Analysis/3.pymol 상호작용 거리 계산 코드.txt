@@ -1,0 +1,51 @@
+pymol 스크립트에 입력한 코드
+
+select pep1, chain A and resi 204-210
+select pep2, chain B and resi 1101-1106
+
+distance all_dists, pep1, pep2
+
+# 최단 거리 재기
+python
+from pymol import cmd
+import math
+
+def mindist(sel1, sel2, obj_name="min_dist"):
+    idx1 = cmd.index(sel1)
+    idx2 = cmd.index(sel2)
+    if not idx1 or not idx2:
+        print("Selections are empty.")
+        return
+    best = None
+    best_d = 1e9
+    for m1,i1 in idx1:
+        c1 = cmd.get_atom_coords(f"{m1}`{i1}", 1)
+        for m2,i2 in idx2:
+            c2 = cmd.get_atom_coords(f"{m2}`{i2}", 1)
+            d = math.dist(c1, c2)
+            if d < best_d:
+                best_d = d
+                best = (m1,i1,m2,i2)
+    if best:
+        cmd.delete(obj_name)
+        cmd.distance(obj_name, f"{best[0]}`{best[1]}", f"{best[2]}`{best[3]}")
+        print(f"Min distance = {best_d:.3f} Å between {best[0]}`{best[1]} and {best[2]}`{best[3]}")
+cmd.extend("mindist", mindist)
+python end
+
+mindist pep1, pep2
+
+# 인터페이스 거리를 5Å로 기준
+select ifaceA, byres (chain A within 5 of chain B)
+select ifaceB, byres (chain B within 5 of chain A)
+
+distance pep1_ifaceB, pep1, ifaceB
+mindist pep1, ifaceB, min_dist_2
+
+distance pep2_ifaceA, pep2, ifaceA
+mindist pep2, ifaceA, min_dist_3
+
+# 5A 이내
+distance short_dists, pep1, pep2, 5.0
+distance short2_dists, pep1, ifaceB, 5.0
+distance short3_dists, pep2, ifaceA, 5.0
