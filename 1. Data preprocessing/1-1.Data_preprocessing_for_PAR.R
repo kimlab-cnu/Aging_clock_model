@@ -307,3 +307,42 @@ stand_data <- stand_data %>% relocate(method, .before = stand1)
 
 write.csv(stand_data, file="../output/Transition_IS_area_250605.csv", row.names=F)
 
+
+### 피규어1B bar plot. 목표구간 속 목표 범위(0.1 ≤ PAR ≤ 10) 내 PAR 값의 비율
+library(ggplot2)
+library(dplyr)
+library(scales)
+
+# bar plot (최종)
+ggplot(band_rate_all, aes(x = stand, y = band_rate, fill = stand)) +
+  geom_col(width = 0.6, color = "gray40") +  # 막대 폭/테두리
+  geom_text(
+    aes(label = percent(band_rate, accuracy = 0.1)),
+    vjust = -0.4, size = 4, color = "black"
+  ) +
+  scale_fill_manual(
+    name = "Internal Standard",
+    values = c(
+      "stand1" = "#F4A7B9",  # 연한 살구빛 분홍 (PAR1_Y8)
+      "stand2" = "#D6C26E",  # 밝은 머스타드 베이지 (PAR2_Y6)
+      "stand3" = "#8FD19E",  # 민트그린 (PAR3_Y8)
+      "stand4" = "#7DCFE0",  # 밝은 하늘색 (PAR4_Y6)
+      "stand5" = "#8DA9E0",  # 연한 블루그레이 (PAR5_Y8)
+      "stand6" = "#D79ACD"   # 연보라 핑크 (PAR6_Y6)
+    )
+  ) +
+  labs(
+    x = "Internal Standard (stand)",
+    y = "Fraction within 0.1–10 (log10 −1~1)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "right",               # 색상 라벨 오른쪽 배치
+    legend.title = element_text(face = "bold"),
+    axis.text = element_text(color = "gray25"),
+    axis.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
+# band_rate(stand) = N_in(stand) / N_total(stand) -> 비율=logPAR가 NA가 아닌 유효한 관측값 개수/-1 ≤ logPAR ≤ 1를 만족하는 행들의 개수
+# 각 내부표준(stand)이 얼마나 안정적으로 PAR을 보정했는가 -> 어떤 IS를 선택해야 할지 판단 근거가 되는 핵심 지표
