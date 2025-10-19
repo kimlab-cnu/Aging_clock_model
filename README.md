@@ -8,10 +8,12 @@
 ## 1. Data preprocessing
 - #### Data_preprocessing_for_PAR.R
 Normalize에 사용할 internal standard(IS)를 선택하기 위해서, IS 중 peptide-03의 1,2,3번째 precursor의 6개 이온을 이용하여 각 이온의 PAR (Peak Area Ratio) 값을 계산함.
+(피규어1B. 목표 범위(0.1 ≤ PAR ≤ 10) 내 PAR 값의 비율 bar plot 코드 추가 완료)
 
 
 - #### PAR_distribution_histogram.R
 위에서 구한 PAR1~6에 log10을 씌우고, CV값도 같이 나타낸 히스토그램을 그림.
+(피규어1A,C 코드 추가 완료)
 
 
 - #### PAR_input_preprocessing.R
