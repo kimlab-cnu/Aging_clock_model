@@ -59,7 +59,7 @@
 
 ---
 - ##### 참고
-cytoscape: Full STRING Network / confidence ≥ 0.7 / Homo sapiens
+cytoscape: Full STRING Network / confidence ≥ 0.7 / Homo sapiens (+매뉴얼 참고)
 
 AF3 multimer 웹서버: PTM은 N-linked glycosylation site만 NAG로 추가
 
