@@ -1,4 +1,4 @@
-# Aging clock model
+# Age-dependent Structural Reorganization of the Human Plasma Proteome
 Aging research has largely focused on changes in protein expression levels, but aging cannot be explained by abundance changes alone. Here we focus on an under-explored dimension: structural changes in proteins and the dynamics of their interaction networks.
 In this study, we integrated experimental proteomics with computational structural biology to comprehensively characterize the age-dependent structural dynamics of plasma proteins — that is, how plasma proteins change structurally over a healthy life course.
 
