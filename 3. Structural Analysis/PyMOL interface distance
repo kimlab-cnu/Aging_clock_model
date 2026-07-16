@@ -1,11 +1,11 @@
-pymol 스크립트에 입력한 코드
+# pymol scripts
 
 select pep1, chain A and resi 204-210
 select pep2, chain B and resi 1101-1106
 
 distance all_dists, pep1, pep2
 
-# 최단 거리 재기
+# measure the shortest distance
 python
 from pymol import cmd
 import math
@@ -35,7 +35,7 @@ python end
 
 mindist pep1, pep2
 
-# 인터페이스 거리를 5Å로 기준
+# use 5 Å as the interface distance cutoff
 select ifaceA, byres (chain A within 5 of chain B)
 select ifaceB, byres (chain B within 5 of chain A)
 
@@ -45,7 +45,7 @@ mindist pep1, ifaceB, min_dist_2
 distance pep2_ifaceA, pep2, ifaceA
 mindist pep2, ifaceA, min_dist_3
 
-# 5A 이내
+# within 5 Å
 distance short_dists, pep1, pep2, 5.0
 distance short2_dists, pep1, ifaceB, 5.0
 distance short3_dists, pep2, ifaceA, 5.0
