@@ -169,10 +169,10 @@ extract_peptide_area(m3_data_Rep_50s_6, "m3_50s_6")
 
 # stand1 : YVYVADVAAK -> y8 (top transition)
 # stand2 : YVYVADVAAK -> y6 (top transition)
-# stand3 : YVYVADVAAK -> y8 (2번째 transition)
-# stand4 : YVYVADVAAK -> y6 (2번째 transition)
-# stand5 : YVYVADVAAK -> y8 (3번째 transition)
-# stand6 : YVYVADVAAK -> y6 (3번째 transition)
+# stand3 : YVYVADVAAK -> y8 (2nd transition)
+# stand4 : YVYVADVAAK -> y6 (2nd transition)
+# stand5 : YVYVADVAAK -> y8 (3rd transition)
+# stand6 : YVYVADVAAK -> y6 (3rd transition)
 
 save.image("./Aging_Clock_data_preprocessing_250605.RData")
 load("./Aging_Clock_data_preprocessing_250605.RData")
@@ -247,10 +247,10 @@ write.csv(m3_df, file="../output/m3_result_PAR.csv", row.names=F)
 final_df <- rbind(m1_df, m2_df)
 final_df <- rbind(final_df, m3_df)
 
-write.csv(final_df, file="../output/Transition_PAR_All (IS 포함)_250527.csv", row.names=F)
+write.csv(final_df, file="../output/Transition_PAR_All (IS included)_250527.csv", row.names=F)
 
 final_IS <- final_df %>% filter(grepl("^Peptide", Protein))
-final_Sample <- final_df %>% filter(!grepl("^Peptide", Protein))  # Peptide들만 따로 뽑아서
+final_Sample <- final_df %>% filter(!grepl("^Peptide", Protein))  # Keep only the sample peptides (exclude internal standards)
 
 write.csv(final_Sample, file="../output/Transition_PAR_Results_250605.csv", row.names=F)
 
@@ -308,14 +308,14 @@ stand_data <- stand_data %>% relocate(method, .before = stand1)
 write.csv(stand_data, file="../output/Transition_IS_area_250605.csv", row.names=F)
 
 
-### 피규어1B bar plot. 목표구간 속 목표 범위(0.1 ≤ PAR ≤ 10) 내 PAR 값의 비율
+### Figure 1B bar plot. Fraction of PAR values within the target range (0.1 ≤ PAR ≤ 10)
 library(ggplot2)
 library(dplyr)
 library(scales)
 
-# bar plot (최종)
+# bar plot (final)
 ggplot(band_rate_all, aes(x = stand, y = band_rate, fill = stand)) +
-  geom_col(width = 0.6, color = "gray40") +  # 막대 폭/테두리
+  geom_col(width = 0.6, color = "gray40") +  # bar width / border
   geom_text(
     aes(label = percent(band_rate, accuracy = 0.1)),
     vjust = -0.4, size = 4, color = "black"
@@ -323,12 +323,12 @@ ggplot(band_rate_all, aes(x = stand, y = band_rate, fill = stand)) +
   scale_fill_manual(
     name = "Internal Standard",
     values = c(
-      "stand1" = "#F4A7B9",  # 연한 살구빛 분홍 (PAR1_Y8)
-      "stand2" = "#D6C26E",  # 밝은 머스타드 베이지 (PAR2_Y6)
-      "stand3" = "#8FD19E",  # 민트그린 (PAR3_Y8)
-      "stand4" = "#7DCFE0",  # 밝은 하늘색 (PAR4_Y6)
-      "stand5" = "#8DA9E0",  # 연한 블루그레이 (PAR5_Y8)
-      "stand6" = "#D79ACD"   # 연보라 핑크 (PAR6_Y6)
+      "stand1" = "#F4A7B9",  # light apricot pink (PAR1_Y8)
+      "stand2" = "#D6C26E",  # mustard beige (PAR2_Y6)
+      "stand3" = "#8FD19E",  # mint green (PAR3_Y8)
+      "stand4" = "#7DCFE0",  # sky blue (PAR4_Y6)
+      "stand5" = "#8DA9E0",  # blue-gray (PAR5_Y8)
+      "stand6" = "#D79ACD"   # lilac pink (PAR6_Y6)
     )
   ) +
   labs(
@@ -337,12 +337,12 @@ ggplot(band_rate_all, aes(x = stand, y = band_rate, fill = stand)) +
   ) +
   theme_minimal(base_size = 13) +
   theme(
-    legend.position = "right",               # 색상 라벨 오른쪽 배치
+    legend.position = "right",               # place color legend on the right
     legend.title = element_text(face = "bold"),
     axis.text = element_text(color = "gray25"),
     axis.title = element_text(face = "bold"),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
   )
-# band_rate(stand) = N_in(stand) / N_total(stand) -> 비율=logPAR가 NA가 아닌 유효한 관측값 개수/-1 ≤ logPAR ≤ 1를 만족하는 행들의 개수
-# 각 내부표준(stand)이 얼마나 안정적으로 PAR을 보정했는가 -> 어떤 IS를 선택해야 할지 판단 근거가 되는 핵심 지표
+# band_rate(stand) = N_in(stand) / N_total(stand) -> rate = (count of valid observations where logPAR is not NA) / (count of rows satisfying -1 <= logPAR <= 1)
+# How stably each internal standard (stand) normalized the PAR -> the key metric used as the basis for deciding which IS to select
