@@ -48,7 +48,7 @@ df_merged <- df_merged %>% mutate(Group = recode(Group, "20s" = "twenties", "30s
 df_merged$Group <- factor(df_merged$Group, levels = c("twenties", "thirties", "forties", "fifties"))
 
 df_ion <- df_merged %>%
-  filter(Name == "PROC_DIKEVF_1_y1") # ion 이름만 바꿔서 실행
+  filter(Name == "PROC_DIKEVF_1_y1") # run by swapping in a different ion name
 
 pval_df <- data.frame(
   group1 = c("twenties", "thirties", "forties", "twenties", "twenties", "thirties"),
@@ -59,7 +59,7 @@ pval_df <- data.frame(
         unique(df_ion$pval_20Svs40S),
         unique(df_ion$pval_20Svs50S),
         unique(df_ion$pval_30Svs50S)),
-  y.position = c(7.3, 7.5, 7.7, 8.5, 9.5, 9)  # y위치는 데이터 분포에 맞게 조정
+  y.position = c(7.3, 7.5, 7.7, 8.5, 9.5, 9)  # adjust y position to fit the data distribution
 )
 
 pval_df$p.signif <- ifelse(pval_df$p < 0.001, "***", ifelse(pval_df$p < 0.01, "**", ifelse(pval_df$p < 0.05, "*", "ns")))
@@ -77,7 +77,7 @@ ggplot(df_ion, aes(x = Group, y = PAR, fill = Group)) +
   labs(title = "Boxplot of Ions", y = "PAR (log2)", x = "")
   
 
-# y.position 자동화
+# automate y.position
 
 library(dplyr)
 
