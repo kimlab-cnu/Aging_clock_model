@@ -170,7 +170,7 @@ ions_raw_uuu <- merged_results %>%
     pval_40Svs50S < 0.05,
     logFC_20Svs30S > FC_cutoff,   
     logFC_30Svs40S > FC_cutoff, 
-    logFC_40Svs50S > FC_cutoff    # 증가-증가-증가: 0개
+    logFC_40Svs50S > FC_cutoff    # increase-increase-increase: 0 ions
   )
 
 ions_ddd <- merged_results %>%
@@ -190,7 +190,7 @@ ions_raw_ddd <- merged_results %>%
     pval_40Svs50S < 0.05,
     logFC_20Svs30S < -FC_cutoff,   
     logFC_30Svs40S < -FC_cutoff, 
-    logFC_40Svs50S < -FC_cutoff    # 감소-감소-감소: 0개
+    logFC_40Svs50S < -FC_cutoff    # decrease-decrease-decrease: 0 ions
   )
 
 # pattern: 110 = (1,1,0) or (-1,-1,0)
@@ -199,7 +199,7 @@ ions_raw_uum <- merged_results %>%
     pval_20Svs30S < 0.05,
     pval_30Svs40S < 0.05,
     pval_40Svs50S > 0.05,
-    logFC_20Svs30S > FC_cutoff,   # 증가-증가-유지: 0개
+    logFC_20Svs30S > FC_cutoff,   # increase-increase-maintain: 0 ions
     logFC_30Svs40S > FC_cutoff, 
   )
 
@@ -208,7 +208,7 @@ ions_raw_ddm <- merged_results %>%
     pval_20Svs30S < 0.05,
     pval_30Svs40S < 0.05,
     pval_40Svs50S > 0.05,
-    logFC_20Svs30S < -FC_cutoff,   # 감소-감소-유지: 0개
+    logFC_20Svs30S < -FC_cutoff,   # decrease-decrease-maintain: 0 ions
     logFC_30Svs40S < -FC_cutoff, 
   )
 
@@ -218,7 +218,7 @@ ions_raw_umu <- merged_results %>%
     pval_20Svs30S < 0.05,
     pval_30Svs40S > 0.05,
     pval_40Svs50S < 0.05,
-    logFC_20Svs30S > FC_cutoff,   # 증가-유지-증가 : 29개
+    logFC_20Svs30S > FC_cutoff,   # increase-maintain-increase: 29 ions
     logFC_40Svs50S > FC_cutoff, 
   )
 
@@ -227,7 +227,7 @@ ions_raw_dmd <- merged_results %>%
     pval_20Svs30S < 0.05,
     pval_30Svs40S > 0.05,
     pval_40Svs50S < 0.05,
-    logFC_20Svs30S < -FC_cutoff,   # 감소-유지-감소: 0개
+    logFC_20Svs30S < -FC_cutoff,   # decrease-maintain-decrease: 0 ions
     logFC_40Svs50S < -FC_cutoff, 
   )
 
@@ -237,7 +237,7 @@ ions_raw_umm <- merged_results %>%
     pval_20Svs30S < 0.05,
     pval_30Svs40S > 0.05,
     pval_40Svs50S > 0.05,
-    logFC_20Svs30S > FC_cutoff,   # 증가-유지-유지 : 58개
+    logFC_20Svs30S > FC_cutoff,   # increase-maintain-maintain: 58 ions
   )
 
 ions_raw_dmm <- merged_results %>%
@@ -245,7 +245,7 @@ ions_raw_dmm <- merged_results %>%
     pval_20Svs30S < 0.05,
     pval_30Svs40S > 0.05,
     pval_40Svs50S > 0.05,
-    logFC_20Svs30S < -FC_cutoff,   # 감소-유지-유지 : 12개
+    logFC_20Svs30S < -FC_cutoff,   # decrease-maintain-maintain: 12 ions
   )
 
 # pattern: 011 = (0,1,1) or (0,-1, -1)
@@ -254,7 +254,7 @@ ions_raw_muu <- merged_results %>%
     pval_20Svs30S > 0.05,
     pval_30Svs40S < 0.05,
     pval_40Svs50S < 0.05,
-    logFC_30Svs40S > FC_cutoff,   # 유지-증가-증가 : 2개
+    logFC_30Svs40S > FC_cutoff,   # maintain-increase-increase: 2 ions
     logFC_40Svs50S > FC_cutoff
   )
 
@@ -263,7 +263,7 @@ ions_raw_mdd <- merged_results %>%
     pval_20Svs30S > 0.05,
     pval_30Svs40S < 0.05,
     pval_40Svs50S < 0.05,
-    logFC_30Svs40S < -FC_cutoff,   # 유지-감소-감소 : 0개
+    logFC_30Svs40S < -FC_cutoff,   # maintain-decrease-decrease: 0 ions
     logFC_40Svs50S < -FC_cutoff
   )
 
@@ -273,7 +273,7 @@ ions_raw_mum <- merged_results %>%
     pval_20Svs30S > 0.05,
     pval_30Svs40S < 0.05,
     pval_40Svs50S > 0.05,
-    logFC_30Svs40S > FC_cutoff   # 유지-증가-유지 : 71개
+    logFC_30Svs40S > FC_cutoff   # maintain-increase-maintain: 71 ions
   )
 
 ions_raw_mdm <- merged_results %>%
@@ -281,7 +281,7 @@ ions_raw_mdm <- merged_results %>%
     pval_20Svs30S > 0.05,
     pval_30Svs40S < 0.05,
     pval_40Svs50S > 0.05,
-    logFC_30Svs40S < -FC_cutoff   # 유지-감소-유지 : 2개
+    logFC_30Svs40S < -FC_cutoff   # maintain-decrease-maintain: 2 ions
   )
 
 # pattern: 001 = (0,0,1) or (0,0,-1)
@@ -290,7 +290,7 @@ ions_raw_mmu <- merged_results %>%
     pval_20Svs30S > 0.05,
     pval_30Svs40S > 0.05,
     pval_40Svs50S < 0.05,
-    logFC_40Svs50S > FC_cutoff    # 유지-유지-증가 : 75개
+    logFC_40Svs50S > FC_cutoff    # maintain-maintain-increase: 75 ions
   )
 
 ions_raw_mmd <- merged_results %>%
@@ -298,7 +298,7 @@ ions_raw_mmd <- merged_results %>%
     pval_20Svs30S > 0.05,
     pval_30Svs40S > 0.05,
     pval_40Svs50S < 0.05,
-    logFC_40Svs50S < -FC_cutoff   # 유지-유지-감소 : 9개
+    logFC_40Svs50S < -FC_cutoff   # maintain-maintain-decrease: 9 ions
   )
 
 # pattern: 000
@@ -306,7 +306,7 @@ ions_raw_mmm <- merged_results %>%
   filter(
     pval_20Svs30S > 0.05,
     pval_30Svs40S > 0.05,
-    pval_40Svs50S > 0.05          # 유지-유지-유지 : 1521개
+    pval_40Svs50S > 0.05          # maintain-maintain-maintain: 1521 ions
   )
 
 
