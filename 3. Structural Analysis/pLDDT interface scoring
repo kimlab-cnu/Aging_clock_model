@@ -1,19 +1,18 @@
-AF3 결과의 ipTM, pTM 등의 수치가 너무 낮아서, 다른 수치 찾아봄 -> pLDDT 구해보기
+# pymol scripts
 
-pymol 스크립트 코드
-# pep1에서 일정 거리 이내에 있는 ifaceB의 잔기만 선택 (5A 이내)
+# select only the ifaceB residues within a given distance of pep1 (within 5 Å)
 select ifaceB_near_pep1, byres (ifaceB within 5 of pep1)
 
-# pep1과 위에서 선택한 인터페이스(ifaceB_near_pep1) 선택
+# select pep1 together with the interface chosen above (ifaceB_near_pep1)
 select interface1, pep1 or ifaceB_near_pep1
 
-# interface1(pep1+ifaceB_near_pep1)의 평균 pLDDT
+# mean pLDDT of interface1 (pep1 + ifaceB_near_pep1)
 stored.bfactors = []
 iterate interface1, stored.bfactors.append(b)
 print("Mean pLDDT =", sum(stored.bfactors)/len(stored.bfactors))
 
 
-# 파이몰 파일 속 전부의 평균 pLDDT
+# mean pLDDT of everything in the PyMOL file
 stored.bfactors = []
 iterate all, stored.bfactors.append(b)
 print("Mean pLDDT =", sum(stored.bfactors)/len(stored.bfactors))
