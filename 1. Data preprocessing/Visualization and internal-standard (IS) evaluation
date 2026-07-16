@@ -25,7 +25,7 @@ df2_CV <- df2 %>%
 PAR_data <- PAR_data %>%
   left_join(df2_CV %>% select(Group, CV_label), by = "Group")
 
-# ####피규어1A. PAR 분포 히스토그램
+# ####Figure 1A. PAR distribution histogram
 library(ggplot2)
 
 p <- ggplot(PAR_data, aes(x = PAR, fill = CV_label)) +
@@ -58,10 +58,10 @@ PAR_data %>% filter(PAR > 10) %>%
   group_by(Group) %>% summarise(count = n()) %>%
   arrange(desc(count))
 
-###피규어1C 코드 추가
+###Figure 1C code added
 # Figure 2C. Coefficient of Variation (CV) comparison across internal standards
-# 이미 계산해둔 CV 값을 막대그래프로 시각화.
-# 해석 포인트: stand4, stand5 CV가 낮고 stand6 CV가 가장 큼.
+# Visualize the already-computed CV values as a bar chart
+# Interpretation: stand4 and stand5 have low CV, while stand6 has the highest CV
 cv_tbl <- read_csv("CV_Group_250605.csv") %>%
   mutate(Group = factor(Group, levels = c("PAR1_Y8","PAR2_Y6","PAR3_Y8","PAR4_Y6","PAR5_Y8","PAR6_Y6")))
 
@@ -76,7 +76,7 @@ ggplot(cv_tbl, aes(x = Group, y = CV, fill = Group)) +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 35, hjust = 1))
 
-# 범례 추가
+# Add legend
 cv_tbl <- read_csv("CV_Group_250605.csv") %>%
   mutate(Group = factor(Group, 
                         levels = c("PAR1_Y8","PAR2_Y6","PAR3_Y8",
@@ -112,7 +112,7 @@ ggplot(cv_tbl, aes(x = Group, y = CV, fill = Group)) +
   ) +
   theme_minimal(base_size = 13) +
   theme(
-    legend.position = "right",         # 범례를 오른쪽으로
+    legend.position = "right",         # Legend on the right
     legend.title = element_text(face = "bold"),
     axis.text.x = element_text(angle = 35, hjust = 1),
     panel.grid.minor = element_blank(),
